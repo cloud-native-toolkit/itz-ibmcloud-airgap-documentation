@@ -38,6 +38,9 @@ Some fields in this email will be unformated.  You will be able to download the 
 
 ## Environment Overview
 
+### VPN Server
+To access the multiple WebUIs deployed in this solution, a VPN Configuration is included in your welcome email. On a Mac, you can use [TunnelBlick](https://tunnelblick.net/) to connect.  On Windows or Linux, you may use [OpenVPN](https://openvpn.net/vpn-client/).
+
 ### Bastion Host
 The bastion host is the only component in the environment with a public IP address.  It's an Ubuntu 20.04 server with a 1TB /data disk for any components you need to download.  It has docker-ce installed, `oc`, `skopeo` and `ibmcloud` cli utilities. You may SSH into it as the `ubuntu` user with the SSH key you received in the welcome email.
 
@@ -72,7 +75,7 @@ Last login: Thu Feb 10 03:54:43 2022 from 24.171.197.170
 ubuntu@itzroks-1100007b1r-bzpo1222-bastion:~$
 ```
 
-The cluster `kubeconfig` file is pre-loaded into `~/.kube/config`, so you can automatically execute `oc` commands.
+The cluster `kubeconfig` file is pre-loaded into `~/.kube/config`, so you can automatically execute `oc` commands without any futher configuration changes.
 
 ```bash
 ubuntu@itzroks-1100007b1r-bzpo1222-bastion:~$ oc get nodes
@@ -84,3 +87,21 @@ NAME          STATUS   ROLES           AGE    VERSION
 10.1.64.17    Ready    master,worker   143m   v1.21.6+bb8d50a
 10.1.64.18    Ready    master,worker   141m   v1.21.6+bb8d50a
 ```
+
+### Registry Server
+
+The registry server is also an Ubuntu 20.04 server with a 1TB /data disk meant to be used for your private image registry.  The following componets are pre-installed into the cluster
+
+#### Harbor
+
+Harbor is pre-installed into the server on port 443.  You can access the Harbor UI by clicking on the Harbor UI link in the welcome email.  Credentials are in the welcome email as well.
+ChartMuseum, a helm chart repository, is pre-installed into Harbor, as well as Trivy, a vulnerability scanner for your container images.
+
+The most common registry namespaces are created, with `ocp4` prepopulated with the OpenShift Platform images, and `olm` used to host a limited subset of the OperatorHub Catalog Images (openshift-ocs, openshift-gitops, openshift-pipelines). Prepopulated into the `toolkit-charts` registry namespace are all the Helm charts offered by the [Cloud Native Toolkit](https://charts.cloudnativetoolkit.dev/).
+
+If additional registry namespaces need to be created, please consult the [Harbor documentation](https://goharbor.io/docs/2.3.0/)
+
+#### Gitea
+
+Gitea is also pre-installed into the Registry Server on port 3000.  It provides a Private Github Repository for your GitOps deployments.  A fork of the [Cloud Native Toolkit GitOps Framework](https://github.com/cloud-native-toolkit/multi-tenancy-gitops) (and -infra, -services, -apps) is deployed into the Gitea server under the `cntk-gitops` org.
+The repos are also cloned on the Bastion Host under `/home/ubuntu/repositories` with the gitea git token already included in the repo configuration.
