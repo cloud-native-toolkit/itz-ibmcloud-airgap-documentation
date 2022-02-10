@@ -119,7 +119,17 @@ We also deploy the OpenShift GitOps Operator on your cluster.  The URL and crede
 
 ## ClouPak Deployments
 
-Familiarize yourself with  your CloudPak AirGap deployment processes.  A cloudpak agnostic deployment model can be located in our Cloud Pak Production Deployment Guides [Restricted Networks](https://production-gitops.dev/infrastructure/restricted-networks/#mirroring-cloudpak-container-images) section.
+Familiarize yourself with  your [CloudPak](https://www.ibm.com/docs/en/cloud-paks) AirGap deployment processes.  A cloudpak agnostic deployment model can be located in our Cloud Pak Production Deployment Guides [Restricted Networks](https://production-gitops.dev/infrastructure/restricted-networks/#mirroring-cloudpak-container-images) section.
+
+At a high level, this model consists of the following steps:
+
+- cloudctl case save
+- cloudctl case launch --action configure-creds-airgap  # for your private registry
+- cloudctl case launch --action configure-creds-airgap  # for cp.icr.io
+- cloudctl case launch --action mirror-images
+- cloudctl case launch --action configure-cluster-airgap
+- cloudctl case launch --action install-catalog
+
 
 Once the images are mirrored, follow the [Update imageContentSourcePolicy](#updating-image-content-source-policies) section to update your cluster nodes.
 
