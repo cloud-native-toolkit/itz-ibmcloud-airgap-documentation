@@ -121,11 +121,11 @@ We also deploy the OpenShift GitOps Operator on your cluster.  The URL and crede
 
 Familiarize yourself with  your CloudPak AirGap deployment processes.  A cloudpak agnostic deployment model can be located in our Cloud Pak Production Deployment Guides [Restricted Networks](https://production-gitops.dev/infrastructure/restricted-networks/#mirroring-cloudpak-container-images) section.
 
-Once the images are mirrored, follow the [Update imageContentSourcePolicy](#update-image-content-source-policy) section to update your cluster nodes.
+Once the images are mirrored, follow the [Update imageContentSourcePolicy](#updating-image-content-source-policies) section to update your cluster nodes.
 
 ## Pushing External Images to your Private Image Registry
 
-To add any additional images you may need into your registry, you can use the `skopeo` utility.  First logon to both source and private registry with skopeo, then use `skopeo copy` to copy the images
+To add any additional images you may need into your registry, you can use the `skopeo` utility from the Bastion Host.  First logon to both source and private registry with skopeo, then use `skopeo copy` to copy the images
 
 ```bash
 ubuntu@itzroks-1100007b1r-bzpo1222-bastion:~/$ skopeo login docker.io                                                        
