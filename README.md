@@ -18,30 +18,30 @@ Finally, an OpenShift cluster is deployed into another set of subnets with no pu
 
 A VPN Server is deployed in each region to provide access to the OpenShift Cluster, as well as the UIs of the OpenShift Cluster, Image Registry and GitHub server.
 
-
-
 ## Welcome Email
 
 After the environment is deployed from TechZone, you will receive an email from TechZone with your environment details.  The email will include:
-  - Next Steps:  A link to this repository
-  - Bastion Host and Registry Host IP Addresses (Private and Public)
-  - Bastion Host SSH Key
-  - Image Registry Private IP Address
-  - Details of your OpenShift Cluster, with links to the IBM Cloud Cluster page
-  - Harbor URL and Login Credentials
-  - Gitea URL and Login Credentials
-  - ArgoCD URL and Login Credentials
-  - VPN Configuration to access the environment
+
+- Next Steps:  A link to this repository
+- Bastion Host and Registry Host IP Addresses (Private and Public)
+- Bastion Host SSH Key
+- Image Registry Private IP Address
+- Details of your OpenShift Cluster, with links to the IBM Cloud Cluster page
+- Harbor URL and Login Credentials
+- Gitea URL and Login Credentials
+- ArgoCD URL and Login Credentials
+- VPN Configuration to access the environment
 
 Some fields in this email will be unformated.  You will be able to download the SSH Key and VPN Configuration by going to the [My Reservations](https://techzone.ibm.com/my/reservations) page in TechZone, clicking your provisioned environment, and clicking the `Download SSH Key` and `Download OpenVPN Config` buttons.
-
 
 ## Environment Overview
 
 ### VPN Server
+
 To access the multiple WebUIs deployed in this solution, a VPN Configuration is included in your welcome email. On a Mac, you can use [TunnelBlick](https://tunnelblick.net/) to connect.  On Windows or Linux, you may use [OpenVPN](https://openvpn.net/vpn-client/).
 
 ### Bastion Host
+
 The bastion host is the only component in the environment with a public IP address.  It's an Ubuntu 20.04 server with a 1TB /data disk for any components you need to download.  It has docker-ce installed, `oc`, `skopeo` and `ibmcloud` cli utilities. You may SSH into it as the `ubuntu` user with the SSH key you received in the welcome email.
 
 ```bash
@@ -117,6 +117,33 @@ If your workloads require RWX storage classes, you can deploy OpenShift Data Fou
 
 We also deploy the OpenShift GitOps Operator on your cluster.  The URL and credentials are included in the welcome email.  We automatically deploy the 4 `ArgoCD Applications` for bootstrap,  infra, services and applications, each corresponding to the `cntk-gitops` repositories under `/home/ubuntu/repositories`.
 
-##  ClouPak Deployments
+## ClouPak Deployments
 
-Familiarize yourself with the your CloudPak AirGap deployment processes.  A cloudpak agnostic deployment model can be located in our Cloud Pak Production Deployment Guides [Restricted Networks](https://production-gitops.dev/infrastructure/restricted-networks/#mirroring-cloudpak-container-images) section.
+Familiarize yourself with  your CloudPak AirGap deployment processes.  A cloudpak agnostic deployment model can be located in our Cloud Pak Production Deployment Guides [Restricted Networks](https://production-gitops.dev/infrastructure/restricted-networks/#mirroring-cloudpak-container-images) section.
+
+Once the images are mirrored, follow the [Update imageContentSourcePolicy](#update-image-content-source-policy) section to update your cluster nodes.
+
+## Pushing External Images to your Private Image Registry
+
+To add any additional images you may need into your registry, you can use the `skopeo` utility.  First logon to both source and private registry with skopeo, then use `skopeo copy` to copy the images
+
+```bash
+ubuntu@itzroks-1100007b1r-bzpo1222-bastion:~/$ skopeo login docker.io                                                        
+Username: yourusername
+Password: 
+Login Succeeded!
+ubuntu@itzroks-1100007b1r-bzpo1222-bastion:~/$ skopeo login 10.1.32.9
+Username: admin
+Password:
+Login Succeeded!
+ubuntu@itzroks-1100007b1r-bzpo1222-bastion:~/$ skopeo copy docker://docker.io/hello-world:latest docker://10.1.32.9/ocp4/hello-world:latest
+Getting image source signatures
+Copying blob 2db29710123e done
+Copying config feb5d9fea6 done
+Writing manifest to image destination
+Storing signatures
+```
+
+## Updating Image Content Source Policies
+
+TODO:  Document DaemonSet and how to update it
