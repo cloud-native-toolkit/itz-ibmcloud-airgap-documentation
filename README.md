@@ -72,7 +72,7 @@ Last login: Thu Feb 10 03:54:43 2022 from 24.171.197.170
 ubuntu@itzroks-1100007b1r-bzpo1222-bastion:~$
 ```
 
-The kubeconfig file is pre-loaded into ~/.kube/config, so you can automatically execute `oc` commands.
+The cluster `kubeconfig` file is pre-loaded into `~/.kube/config`, so you can automatically execute `oc` commands.
 
 ```bash
 ubuntu@itzroks-1100007b1r-bzpo1222-bastion:~$ oc get nodes
