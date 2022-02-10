@@ -94,14 +94,17 @@ The registry server is also an Ubuntu 20.04 server with a 1TB /data disk meant t
 
 #### Harbor
 
-Harbor is pre-installed into the server on port 443.  You can access the Harbor UI by clicking on the Harbor UI link in the welcome email.  Credentials are in the welcome email as well.
-ChartMuseum, a helm chart repository, is pre-installed into Harbor, as well as Trivy, a vulnerability scanner for your container images.
+Harbor is pre-installed into the server on port 443.  You can access the Harbor UI by clicking on the Harbor UI link in the welcome email.  Credentials are in the welcome email as well. ChartMuseum, a helm chart repository, is pre-installed into Harbor, as well as Trivy, a vulnerability scanner for your container images.
 
 The most common registry namespaces are created, with `ocp4` prepopulated with the OpenShift Platform images, and `olm` used to host a limited subset of the OperatorHub Catalog Images (openshift-ocs, openshift-gitops, openshift-pipelines). Prepopulated into the `toolkit-charts` registry namespace are all the Helm charts offered by the [Cloud Native Toolkit](https://charts.cloudnativetoolkit.dev/).
 
-If additional registry namespaces need to be created, please consult the [Harbor documentation](https://goharbor.io/docs/2.3.0/)
+Please consult the [Harbor documentation](https://goharbor.io/docs/2.3.0/) for additional information and instructions.
 
 #### Gitea
 
 Gitea is also pre-installed into the Registry Server on port 3000.  It provides a Private Github Repository for your GitOps deployments.  A fork of the [Cloud Native Toolkit GitOps Framework](https://github.com/cloud-native-toolkit/multi-tenancy-gitops) (and -infra, -services, -apps) is deployed into the Gitea server under the `cntk-gitops` org.
 The repos are also cloned on the Bastion Host under `/home/ubuntu/repositories` with the gitea git token already included in the repo configuration.
+
+Please consult the [Gitea documentation](https://docs.gitea.io/) for additional information and instructions.
+
+### OpenShift Cluster
