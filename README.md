@@ -75,19 +75,6 @@ Last login: Thu Feb 10 03:54:43 2022 from 24.171.197.170
 ubuntu@itzroks-1100007b1r-bzpo1222-bastion:~$
 ```
 
-The cluster `kubeconfig` file is pre-loaded into `~/.kube/config`, so you can automatically execute `oc` commands without any futher configuration changes.
-
-```bash
-ubuntu@itzroks-1100007b1r-bzpo1222-bastion:~$ oc get nodes
-NAME          STATUS   ROLES           AGE    VERSION
-10.1.0.31     Ready    master,worker   143m   v1.21.6+bb8d50a
-10.1.0.32     Ready    master,worker   139m   v1.21.6+bb8d50a
-10.1.128.17   Ready    master,worker   142m   v1.21.6+bb8d50a
-10.1.128.18   Ready    master,worker   141m   v1.21.6+bb8d50a
-10.1.64.17    Ready    master,worker   143m   v1.21.6+bb8d50a
-10.1.64.18    Ready    master,worker   141m   v1.21.6+bb8d50a
-```
-
 ### Registry Server
 
 The registry server is also an Ubuntu 20.04 server with a 1TB /data disk meant to be used for your private image registry.  The following componets are pre-installed into the cluster
@@ -108,3 +95,28 @@ The repos are also cloned on the Bastion Host under `/home/ubuntu/repositories` 
 Please consult the [Gitea documentation](https://docs.gitea.io/) for additional information and instructions.
 
 ### OpenShift Cluster
+
+Your welcome email will also include a link to the IBM Cloud ROKS Cluster page.  The default is a 4.8 cluster, but 4.7 is also an option. To access the cluster from command line, you can SSH into the bastion host. The cluster `kubeconfig` file is pre-loaded into `~/.kube/config`, with full cluster-admin access, so you can automatically execute `oc` commands without any futher configuration changes.
+
+```bash
+ubuntu@itzroks-1100007b1r-bzpo1222-bastion:~$ oc get nodes
+NAME          STATUS   ROLES           AGE    VERSION
+10.1.0.31     Ready    master,worker   143m   v1.21.6+bb8d50a
+10.1.0.32     Ready    master,worker   139m   v1.21.6+bb8d50a
+10.1.128.17   Ready    master,worker   142m   v1.21.6+bb8d50a
+10.1.128.18   Ready    master,worker   141m   v1.21.6+bb8d50a
+10.1.64.17    Ready    master,worker   143m   v1.21.6+bb8d50a
+10.1.64.18    Ready    master,worker   141m   v1.21.6+bb8d50a
+```
+
+#### OpenShift Container Storage
+
+If your workloads require RWX storage classes, you can deploy OpenShift Data Foundation when deploying your cluster.  You can choose between 500GB and 2TB of storage.
+
+#### OpenShift GitOps Operator
+
+We also deploy the OpenShift GitOps Operator on your cluster.  The URL and credentials are included in the welcome email.  We automatically deploy the 4 `ArgoCD Applications` for bootstrap,  infra, services and applications, each corresponding to the `cntk-gitops` repositories under `/home/ubuntu/repositories`.
+
+##  Next Steps
+
+What now?
