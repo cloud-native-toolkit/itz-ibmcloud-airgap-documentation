@@ -117,6 +117,6 @@ If your workloads require RWX storage classes, you can deploy OpenShift Data Fou
 
 We also deploy the OpenShift GitOps Operator on your cluster.  The URL and credentials are included in the welcome email.  We automatically deploy the 4 `ArgoCD Applications` for bootstrap,  infra, services and applications, each corresponding to the `cntk-gitops` repositories under `/home/ubuntu/repositories`.
 
-##  Next Steps
+##  ClouPak Deployments
 
-What now?
+Familiarize yourself with the your CloudPak AirGap deployment processes.  A cloudpak agnostic deployment model can be located in our Cloud Pak Production Deployment Guides [Restricted Networks](https://production-gitops.dev/infrastructure/restricted-networks/#mirroring-cloudpak-container-images) section.
