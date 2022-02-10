@@ -117,7 +117,104 @@ If your workloads require RWX storage classes, you can deploy OpenShift Data Fou
 
 We also deploy the OpenShift GitOps Operator on your cluster.  The URL and credentials are included in the welcome email.  We automatically deploy the 4 `ArgoCD Applications` for bootstrap,  infra, services and applications, each corresponding to the `cntk-gitops` repositories under `/home/ubuntu/repositories`.
 
-##### TODO: Helm Charts in ArgoCD in AirGap
+##### Helm Charts and ArgoCD Applications considerations
+
+Lets take a look at modifications needed to deploy an ArgoCD Application backed by an external Helm Charts. We're going to update the Console Notification banner for our cluster.
+
+First, update `repositories/gitops-0-bootstrap/0-bootstrap/single-cluster/1-infra/kustomization.yaml` and uncomment the `- argocd/consolenotification.yaml` line.
+
+```yaml
+resources:
+#- argocd/consolelink.yaml
+- argocd/consolenotification.yaml
+#- argocd/namespace-ibm-common-services.yaml
+#- argocd/namespace-ci.yaml
+#- argocd/namespace-dev.yaml
+#- argocd/namespace-staging.yaml
+#- argocd/namespace-prod.yaml
+#- argocd/namespace-cloudpak.yaml
+#- argocd/namespace-istio-system.yaml
+#- argocd/namespace-openldap.yaml
+#- argocd/namespace-sealed-secrets.yaml
+#- argocd/namespace-tools.yaml
+#- argocd/namespace-instana-agent.yaml
+#- argocd/namespace-robot-shop.yaml
+#- argocd/namespace-openshift-storage.yaml
+#- argocd/namespace-spp.yaml
+#- argocd/namespace-spp-velero.yaml
+#- argocd/namespace-baas.yaml
+#- argocd/serviceaccounts-tools.yaml
+#- argocd/storage.yaml
+#- argocd/infraconfig.yaml
+#- argocd/machinesets.yaml
+patches:
+- target:
+    group: argoproj.io
+    kind: Application
+    labelSelector: "gitops.tier.layer=infra"
+  patch: |-
+    - op: add
+      path: /spec/source/repoURL
+      value: https://10.1.32.9:3000/cntk-gitops/multi-tenancy-gitops-infra.git
+    - op: add
+      path: /spec/source/targetRevision
+      value: master
+```
+
+Next, update `repositories/gitops-0-bootstrap/0-bootstrap/single-cluster/1-infra/argocd/consolenotification.yaml` with your own banner details.
+
+Traditionally, at this point you would just `git push` your updates to your Github org and wait for ArgoCD to do its reconciliation. However, since this Application depends on an external Helm Chart, it will be unable to sync.
+
+```bash
+$ oc get applications -n openshift-gitops
+NAME                       SYNC STATUS   HEALTH STATUS
+applications               Synced        Healthy
+bootstrap-single-cluster   Synced        Healthy
+cntk-consolenotification   Unknown       Healthy ## Unknown Sync Status
+infra                      Synced        Healthy
+services                   Synced        Healthy
+```
+
+Upon inspection, note that ArgoCD is unable to reach the external helm repository
+
+```bash
+$ oc logs -n openshift-gitops openshift-gitops-cntk-repo-server-8588fb6df4-lfmkt -f
+...OMMITED...
+time="2022-02-10T14:22:31Z" level=error msg="finished unary call with code Unknown" error="`helm repo add https://cloud-native-toolkit.github.io/toolkit-charts/ https://cloud-native-toolkit.github.io/toolkit-charts/` failed exit status 1: Error: looks like \"https://cloud-native-toolkit.github.io/toolkit-charts/\" is not a valid chart repository or cannot be reached: Get \"https://cloud-native-toolkit.github.io/toolkit-charts/index.yaml\": dial tcp 185.199.108.153:443: connect: connection timed out" grpc.code=Unknown grpc.method=GenerateManifest grpc.request.deadline="2022-02-10T14:22:31Z" grpc.service=repository.RepoServerService grpc.start_time="2022-02-10T14:21:31Z" grpc.time_ms=60369.8 span.kind=server system=grpc
+...OMMITED...
+```
+
+We need to update the consolenotification helm chart configuration in `repositories/gitops-1-infra/consolenotification/Chart.yaml` to point to the right repository.  In this environment, all Cloud Native Toolkit helm charts will be deployed under `https://$YOURREGISTRYPRIVATEIP/chartrepo/toolkit-charts`
+
+```yaml
+apiVersion: v2
+name: ocp-console-notification
+description: Chart to create a ConsoleNotification resource in an OpenShift cluster
+type: application
+version: 0.2.0
+appVersion: 1.16.0
+dependencies:
+  - name: ocp-console-notification
+    version: 0.2.0
+    ## replace 10.1.32.9 with the Private IP Address of your registry server, see your welcome email.
+    repository: https://10.1.32.9/chartrepo/toolkit-charts
+```
+
+Once synced back to Gitea, your applications will be in sync
+
+```bash
+$ oc get applications -n openshift-gitops
+NAME                       SYNC STATUS   HEALTH STATUS
+applications               Synced        Healthy
+bootstrap-single-cluster   Synced        Healthy
+cntk-consolenotification   Synced        Healthy
+infra                      Synced        Healthy
+services                   Synced        Healthy
+
+$ oc get consolenotification
+NAME         TEXT                               LOCATION    AGE
+banner-env   IBM Cloud ROKS AriGapped Cluster   BannerTop   5m2s
+```
 
 ## ClouPak Deployments
 
