@@ -32,5 +32,5 @@ After the environment is deployed from TechZone, you will receive an email from 
   - ArgoCD URL and Login Credentials
   - VPN Configuration to access the environment
 
-Some fields in this email will be unformated.  You will be able to download the SSH Key and VPN Configuration by going to the [My Reservations](https://techzone.ibm.com/my/reservations) page in TechZone, clicking your provisioned environment, and clicking on the `Download SSH Key` and `Download OpenVPN Config` buttons.
+Some fields in this email will be unformated.  You will be able to download the SSH Key and VPN Configuration by going to the [My Reservations](https://techzone.ibm.com/my/reservations) page in TechZone, clicking your provisioned environment, and clicking the `Download SSH Key` and `Download OpenVPN Config` buttons.
 
