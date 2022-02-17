@@ -43,7 +43,7 @@ To access the multiple WebUIs deployed in this solution, a VPN Configuration is 
 Go to the [My Reservations](https://techzone.ibm.com/my/reservations) page in TechZone, click your provisioned environment, and click the `Download VPN Config` button.
 Open your VPN Client, and import the downloaded configuration.  
 
-On Tunnelblick in your Mac, drag the downloaded ovpn_airgap_download file into the Configurations left hard pane.  Select `Only Me` when prompted to install configuration for all users, and enter your password. 
+On Tunnelblick in your Mac, drag the downloaded ovpn_airgap_download file into the Configurations left hard pane.  Select `Only Me` when prompted to install configuration for all users, and enter your password.
 
 ![Tunnelblick](media/image-20220215094528160.png)Press `Connect` to establish a VPN connection to your environment. You should see a window with connection details.
 
@@ -133,8 +133,6 @@ ocs-storagecluster-ceph-rgw   openshift-storage.ceph.rook.io/bucket   Delete    
 ocs-storagecluster-cephfs     openshift-storage.cephfs.csi.ceph.com   Delete         Immediate         true                   38h
 openshift-storage.noobaa.io   openshift-storage.noobaa.io/obc         Delete         Immediate         false                  37h
 ```
-
-
 
 ## 5. OpenShift GitOps Operator
 
@@ -357,8 +355,6 @@ OK
 ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$
 ```
 
-
-
 #### 6.1.3 Configure IBM Entitlement Registry Credentials
 
 ```bash
@@ -446,7 +442,7 @@ If you get an error while mirroring similar to
 error: unable to push quay.io/opencloudio/icp4data-nginx-repo: failed to upload blob sha256:d15edd54cb42b8e220f31259a0e16ab2dc5790543ff58c57c9dd24cf7e597c70: error parsing HTTP 400 response body: invalid character '<' looking for beginning of value: "<html>\r\n<head><title>400 Request Header Or Cookie Too Large</title></head>\r\n<body>\r\n<center><h1>400 Bad Request</h1></center>\r\n<center>Request Header Or Cookie Too Large</center>\r\n<hr><center>nginx</center>\r\n</body>\r\n</html>\r\n"
 ```
 
-rerun the mirror command with `--chunks 50` 
+rerun the mirror command with `--chunks 50`
 
 Once completed, head to the Harbor UI to validate images have been uploaded.
 
@@ -550,17 +546,13 @@ The following helper script can automate this task.  It leverages a special Daem
 ```bash
 ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
 
-ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ for source in $(cat /tmp/airgap_image_policy_zJwCrj3GE |yq -r '.spec.repositoryDigestMirrors[] .source'); do
-	mirror=$(cat /tmp/airgap_image_policy_zJwCrj3GE |yq -r '.spec.repositoryDigestMirrors[] | select(.source == "quay.io/opencloudio")| .mirrors[0]')
-        echo "$source=$mirror"
+ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ for source in $(cat /tmp/airgap_image_policy_zJwCrj3GE |yq -r '.spec.repositoryDigestMirrors[] .source');do
+    mirror=$(cat /tmp/airgap_image_policy_zJwCrj3GE |yq -r --arg source "$source" '.spec.repositoryDigestMirrors[] | select(.source == $source )| .mirrors[0]')
+    echo "$source=$mirror"
 done >> $HOME/manifests-redhat-operator-index/mapping.txt
 
 ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ oc create secret generic -n kube-system registry-mapping --from-file=mapping.txt=$HOME/manifests-redhat-operator-index/mapping.txt --dry-run=client -o yaml|oc apply -f -
 ```
-
-
-
-
 
 ## Pushing External Images to your Private Image Registry
 
@@ -620,4 +612,3 @@ For more examples and ideas, visit:
 
 ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$
 ```
-
