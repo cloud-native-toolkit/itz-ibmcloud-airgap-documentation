@@ -621,6 +621,3 @@ For more examples and ideas, visit:
 ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$
 ```
 
-## Updating Image Content Source Policies
-
-TODO:  Document DaemonSet and how to update it
