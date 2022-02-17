@@ -4,7 +4,7 @@ The IBM Go To Market Assets and Architecture team has developed automation that 
 
 ## Reference Architecture
 
-![Reference Architecture](./media/refarch.svg)
+![Reference Architecture](./media/refarch.pn)
 
 ---
 
@@ -21,8 +21,6 @@ A VPN Server is deployed in each od the target regions to provide access to the 
 ## Getting an Environment
 
 To create an instance of this AirGapped environment, head to the [Production Deployment Guides Collection](https://techzone.ibm.com/collection/production-deployment-guides) in TechZone, click on the `Try It - Get a GitOps Cluster` tab, and select the `IBM Cloud AirGapped Cluster with GitOps configuration` tile.
-
-
 
 ## Welcome Email
 
@@ -645,8 +643,6 @@ marketplace-operator-66c666bf74-jcgn5                             1/1     Runnin
 opencloud-operators-5lw8x                                         1/1     Running     0          2m14s
 redhat-operators-8xgvw                                            1/1     Running     0          2d15h
 ```
-
-
 
 ## Pushing External Images to your Private Image Registry
 
