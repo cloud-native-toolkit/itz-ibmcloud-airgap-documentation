@@ -4,7 +4,7 @@ The IBM Go To Market Assets and Architecture team has developed automation that 
 
 ## Reference Architecture
 
-![Reference Architecture](./media/refarch.pn)
+![Reference Architecture](./media/refarch.png)
 
 ---
 
