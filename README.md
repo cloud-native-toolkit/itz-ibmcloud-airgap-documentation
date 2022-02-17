@@ -8,15 +8,21 @@ The IBM Go To Market Assets and Architecture team has developed automation that 
 
 ---
 
-Leveraging a pre-existing [IBM Cloud VPC Network](https://cloud.ibm.com/docs/vpc), we deploy a Bastion Host into a subnet with a public gateway, and a Private Image Registry into a subnet with no outbound access.  Only traffic allowed between the two subnets is SSH and HTTPS traffic.
+Leveraging a pre-existing [IBM Cloud VPC Network](https://cloud.ibm.com/docs/vpc), this automation deploys a Bastion Host into a subnet with a public gateway, and a Private Image Registry into a subnet with no outbound access.  The only traffic allowed between the two subnets is SSH and HTTPS traffic.
 
 On the Bastion Host, a 1TB disk is mounted in /data for any post-deployment activities you may need to perform.  Although SSH access from the bastion server to the image registry server is allowed, we encourage you not to SSH into the image server directly, as this would not mimic a production environment.
 
 On the Registry Server, we deploy [Harbor](https://goharbor.io/) to provide the private registry, and [Gitea](https://gitea.io/) to provide a private Github repository, prepopulated with the [Multi-Tenancy Gitops Framework](https://github.com/cloud-native-toolkit/multi-tenancy-gitops) from the [Cloud Native Toolkit](https://cloudnativetoolkit.dev/).
 
-Finally, an OpenShift cluster is deployed into another set of subnets with no public gateways, and so the cluster will have no outbound access.
+Finally, an OpenShift cluster is deployed into another set of subnets with no public gateways, so the cluster will have no outbound access.
 
-A VPN Server is deployed in each region to provide access to the OpenShift Cluster, as well as the UIs of the OpenShift Cluster, Image Registry and GitHub server.
+A VPN Server is deployed in each od the target regions to provide access to the OpenShift Cluster, as well as the UIs of the OpenShift Cluster, Image Registry and GitHub server.
+
+## Getting an Environment
+
+To create an instance of this AirGapped environment, head to the [Production Deployment Guides Collection](https://techzone.ibm.com/collection/production-deployment-guides) in TechZone, click on the `Try It - Get a GitOps Cluster` tab, and select the `IBM Cloud AirGapped Cluster with GitOps configuration` tile.
+
+
 
 ## Welcome Email
 
@@ -58,6 +64,8 @@ The bastion host is the only component in the environment with a public IP addre
 ```bash
 $ chmod 400 ~/Downloads/pem_airgap_download.pem
 $ ssh -i ~/Downloads/pem_airgap_download.pem ubuntu@150.240.66.31
+```
+```text
 The authenticity of host '150.240.66.31 (150.240.66.31)' can't be established.
 ED25519 key fingerprint is SHA256:/KPi86xF4+TLOjVBmSsf+LCm6Vcm6jZHCKQeIL4HgtQ.
 This key is not known by any other names
@@ -94,7 +102,7 @@ The most common registry namespaces are created, with `ocp4` prepopulated with t
 
 ![image-20220216112858283](media/image-20220216112858283.png)
 
-A few common registry namespaces are preloaded within Harbor.  If your solution requires additional registry namespaces, or projects, you can create them by by clicking on the `NEW PROJECT` button. Please consult the [Harbor documentation](https://goharbor.io/docs/2.3.0/) for additional information and instructions.
+A few common registry namespaces are preloaded within Harbor.  If your solution requires additional registry namespaces, or projects, you can create them by by clicking on the `NEW PROJECT` button. Consult the [Harbor documentation](https://goharbor.io/docs/2.3.0/) for additional information and instructions.
 
 ## 3. Gitea Repository
 
@@ -103,11 +111,11 @@ The repos are also cloned on the Bastion Host under `/home/ubuntu/repositories` 
 
 ![image-20220216115818278](media/image-20220216115818278.png)
 
-Please consult the [Gitea documentation](https://docs.gitea.io/) for additional information and instructions.
+Consult the [Gitea documentation](https://docs.gitea.io/) for additional information and instructions.
 
 ## 4. OpenShift Cluster
 
-Your welcome email will also include a link to the IBM Cloud ROKS Cluster page.  The default is a 4.8 cluster, but 4.7 is also an option. To access the cluster from command line, you can SSH into the bastion host. The cluster `kubeconfig` file is pre-loaded into `~/.kube/config`, with full cluster-admin access, so you can automatically execute `oc` commands without any futher configuration changes.
+Your welcome email also includes a link to the IBM Cloud ROKS Cluster page.  The default is a 4.8 cluster, but 4.7 is also an option. To access the cluster from command line, you can SSH into the bastion host. The cluster `kubeconfig` file is pre-loaded into `~/.kube/config`, with full cluster-admin access, so you can automatically execute `oc` commands without any futher configuration changes.
 
 ```bash
 ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ oc get nodes
@@ -391,7 +399,7 @@ OK
 
 #### 6.1.4 Mirror CloudPak Images to Harbor Repository
 
-Harbor doesn't create new registry namespaces automatically.  Please consult your CloudPak documentation and create any registry namespaces that are required for your solution.  In this example, we're mirroring CP4I, which requires the `cp`,`cpopen`, `integration` and `opencloudio` registry namespaces.  Create any missing namespaces from the Harbor UI. Once done, you can proceed with the image mirroring process.
+Harbor doesn't create new registry namespaces automatically.  Consult your CloudPak documentation and create any registry namespaces that are required for your solution.  In this example, we're mirroring CP4I, which requires the `cp`,`cpopen`, `integration` and `opencloudio` registry namespaces.  Create any missing namespaces from the Harbor UI. Once done, you can proceed with the image mirroring process.
 
 ```bash
 ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ cloudctl case launch \
