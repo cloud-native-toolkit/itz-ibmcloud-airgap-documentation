@@ -62,11 +62,8 @@ You will npow be able to access the WebUI URLs referenced in your welcome email.
 The bastion host is the only component in the environment with a public IP address.  It's an Ubuntu 20.04 server with a 1TB /data disk for any components you need to download.  It has `docker-ce` installed, `oc`, `skopeo` and `ibmcloud` cli utilities. You may SSH into it as the `ubuntu` user with the SSH key you received in the welcome email. Head to the  [My Reservations](https://techzone.ibm.com/my/reservations) page in TechZone, click your provisioned environment, and click the `Download SSH Key` button.  The Public IP Address of your Bastion Host can be found in your welcome email and in the [My Reservations](https://techzone.ibm.com/my/reservations) page.
 
 ```bash
-chmod 400 ~/Downloads/pem_airgap_download.pem
-ssh -i ~/Downloads/pem_airgap_download.pem ubuntu@150.240.66.31
-```
-
-```text
+$ chmod 400 ~/Downloads/pem_airgap_download.pem
+$ ssh -i ~/Downloads/pem_airgap_download.pem ubuntu@150.240.66.31
 The authenticity of host '150.240.66.31 (150.240.66.31)' can't be established.
 ED25519 key fingerprint is SHA256:/KPi86xF4+TLOjVBmSsf+LCm6Vcm6jZHCKQeIL4HgtQ.
 This key is not known by any other names
@@ -119,10 +116,7 @@ Consult the [Gitea documentation](https://docs.gitea.io/) for additional informa
 Your welcome email also includes a link to the IBM Cloud ROKS Cluster page.  The default is a 4.8 cluster, but 4.7 is also an option. To access the cluster from command line, you can SSH into the bastion host. The cluster `kubeconfig` file is pre-loaded into `~/.kube/config`, with full cluster-admin access, so you can automatically execute `oc` commands without any futher configuration changes.
 
 ```bash
-oc get nodes
-```
-
-```text
+ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ oc get nodes
 NAME          STATUS   ROLES           AGE    VERSION
 10.1.0.31     Ready    master,worker   143m   v1.21.6+bb8d50a
 10.1.0.32     Ready    master,worker   139m   v1.21.6+bb8d50a
