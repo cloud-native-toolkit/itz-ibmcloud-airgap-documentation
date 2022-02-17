@@ -528,7 +528,7 @@ ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$
 
 If your customer is not running ROKS, then you can run `oc apply -f "/tmp/airgap_image_policy_zJwCrj3GE"`
 
-In ROKS, you need to manually update the nodes.  To do so, for each `-mirror` in the list above, create the following
+In ROKS, you need to manually update the nodes.  To do so, for each `-mirror` in the list above, create the following snippet.  
 
 ```text
 [[registry]]
@@ -542,6 +542,23 @@ In ROKS, you need to manually update the nodes.  To do so, for each `-mirror` in
   location = "10.1.32.11/cp" # << this points to our internal registry
   insecure = false
 ```
+
+Then, SSH into each worker node, manually append each `[[registry]]` stanza into /etc/containers/registries.conf, and restart crio with `kill -9 $(pgrep crio)`
+
+The following helper script can automate this task.  It leverages a special DaemonSet created for this environment in the `kube-system` namespace that will update the registry configuration for you without the need of replacing the OpenShift node.  Run the following from your bastion host
+
+```bash
+ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+
+ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ for source in $(cat /tmp/airgap_image_policy_zJwCrj3GE |yq -r '.spec.repositoryDigestMirrors[] .source'); do
+	mirror=$(cat /tmp/airgap_image_policy_zJwCrj3GE |yq -r '.spec.repositoryDigestMirrors[] | select(.source == "quay.io/opencloudio")| .mirrors[0]')
+        echo "$source=$mirror"
+done >> $HOME/manifests-redhat-operator-index/mapping.txt
+
+ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ oc create secret generic -n kube-system registry-mapping --from-file=mapping.txt=$HOME/manifests-redhat-operator-index/mapping.txt --dry-run=client -o yaml|oc apply -f -
+```
+
+
 
 
 
