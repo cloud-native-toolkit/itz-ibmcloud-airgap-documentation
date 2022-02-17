@@ -127,7 +127,7 @@ If your workloads require RWX storage classes, you can deploy OpenShift Data Fou
 ```bash
 ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ oc get sc
 NAME                          PROVISIONER                             RECLAIMPOLICY  VOLUMEBINDINGMODE ALLOWVOLUMEEXPANSION   AGE
-... OMMITED ...
+... OUTPUT OMMITED ...
 ocs-storagecluster-ceph-rbd   openshift-storage.rbd.csi.ceph.com      Delete         Immediate         true                   38h
 ocs-storagecluster-ceph-rgw   openshift-storage.ceph.rook.io/bucket   Delete         Immediate         false                  38h
 ocs-storagecluster-cephfs     openshift-storage.cephfs.csi.ceph.com   Delete         Immediate         true                   38h
