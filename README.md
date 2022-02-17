@@ -552,7 +552,89 @@ ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ for source in $(cat /tmp/airgap_im
 done >> $HOME/manifests-redhat-operator-index/mapping.txt
 
 ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ oc create secret generic -n kube-system registry-mapping --from-file=mapping.txt=$HOME/manifests-redhat-operator-index/mapping.txt --dry-run=client -o yaml|oc apply -f -
+ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$
 ```
+
+### 6.1.6 Create CloudPak Catalog Sources
+
+To create the `CatalogSources` for your CloudPak, run the following command
+
+```bash
+ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ cloudctl case launch \
+  --case $OFFLINEDIR/${CASE_NAME}-${CASE_VERSION}.tgz \
+  --inventory ${CASE_INVENTORY_SETUP} \
+  --action install-catalog \
+  --namespace ${NAMESPACE} \
+  --args "--registry ${LOCAL_REGISTRY} --inputDir $OFFLINEDIR --recursive"
+  
+  ... OUTPUT OMITTED ...
+  -------------Installing catalog source-------------
+# Will need to register the image name at cp.icr.io/cp/<image>, as the content clusters
+# won't add the cp4i mapping for us.
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: ibm-cp-integration-catalog
+  namespace: openshift-marketplace
+spec:
+  displayName: IBM Cloud Pak for Integration
+  publisher: IBM
+  sourceType: grpc
+  image: 10.1.32.11/cpopen/ibm-cp-integration-catalog:1.5.0-2021-11-29-1811-9245e842@sha256:a566d62b945f31da1a2963d0917c0d50e62370ddfcb67616706a810a0328e423
+catalogsource.operators.coreos.com/ibm-cp-integration-catalog created
+done
+[✓] CASE launch script completed successfully
+OK
+ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$
+```
+
+To validate that the `CatalogSources` we first check that they're properly created, and then check that its associated pod is in a `Running` state.
+
+```bash
+ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ oc get catalogsources -A
+NAMESPACE               NAME                                           DISPLAY                                      TYPE   PUBLISHER     AGE
+openshift-marketplace   appconnect-operator-catalogsource              IBM App Connect operator                     grpc   IBM           118s
+openshift-marketplace   aspera-operators                               Aspera Operators                             grpc   IBM           112s
+openshift-marketplace   couchdb-operator-catalog                       Couchdb Operator Catalog                     grpc   IBM           2m4s
+openshift-marketplace   ibm-ai-wmltraining-operator-catalog            WML Core Training                            grpc   IBM           2m14s
+openshift-marketplace   ibm-apiconnect-catalog                         IBM APIConnect catalog                       grpc   IBM           2m13s
+openshift-marketplace   ibm-automation-foundation-core-catalog         IBM Automation Foundation Core Operators     grpc   IBM           2m25s
+openshift-marketplace   ibm-cloud-databases-redis-operator-catalog     ibm-cloud-databases-redis-operator-catalog   grpc   IBM           113s
+openshift-marketplace   ibm-cp-integration-catalog                     IBM Cloud Pak for Integration                grpc   IBM           79s
+openshift-marketplace   ibm-datapower-operator-catalog                 DataPower Operator                           grpc   IBM Content   2m18s
+openshift-marketplace   ibm-eventstreams                               Event Streams Operators                      grpc   IBM           107s
+openshift-marketplace   ibm-integration-asset-repository-catalog       IBM CP4I Asset Repository                    grpc   IBM           91s
+openshift-marketplace   ibm-integration-operations-dashboard-catalog   IBM CP4I Operations Dashboard                grpc   IBM           81s
+openshift-marketplace   ibm-integration-platform-navigator-catalog     IBM CP4I Platform Navigator                  grpc   IBM           84s
+openshift-marketplace   ibmmq-operator-catalogsource                   IBM MQ                                       grpc   IBM           102s
+openshift-marketplace   opencloud-operators                            IBMCS Operators                              grpc   IBM           2m
+openshift-marketplace   redhat-operators                                                                            grpc                 2d15h
+
+ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ oc get pods -n openshift-marketplace
+NAME                                                              READY   STATUS      RESTARTS   AGE
+03f75cd3603a69b73a44a94a27ab695c89a42b9f33bb16dc454676fa21k2j2t   0/1     Completed   0          2d15h
+6b508d7f387428ad1e89cdc055963435dea54c53785656140d165dc729rbpc9   0/1     Completed   0          2d15h
+88d6b59edf41a794c19a5d1bc2d68c216f34a063feed6890448ca55b2f95wjw   0/1     Completed   0          2d15h
+appconnect-operator-catalogsource-vnjbb                           1/1     Running     0          2m12s
+aspera-operators-frs2l                                            1/1     Running     0          2m5s
+couchdb-operator-catalog-lck7t                                    1/1     Running     0          2m18s
+ibm-ai-wmltraining-operator-catalog-s6lrx                         1/1     Running     0          2m30s
+ibm-apiconnect-catalog-7phnf                                      1/1     Running     0          2m28s
+ibm-automation-foundation-core-catalog-szvpv                      1/1     Running     0          2m41s
+ibm-cloud-databases-redis-operator-catalog-qvmwg                  1/1     Running     0          2m6s
+ibm-cp-integration-catalog-jlqhn                                  1/1     Running     0          89s
+ibm-datapower-operator-catalog-8qc58                              1/1     Running     0          2m34s
+ibm-eventstreams-5bz94                                            1/1     Running     0          2m
+ibm-integration-asset-repository-catalog-h798c                    1/1     Running     0          103s
+ibm-integration-operations-dashboard-catalog-b6q7m                1/1     Running     0          92s
+ibm-integration-platform-navigator-catalog-7nfj8                  1/1     Running     0          95s
+ibmmq-operator-catalogsource-wmzqq                                1/1     Running     0          115s
+marketplace-operator-66c666bf74-jcgn5                             1/1     Running     0          2d16h
+opencloud-operators-5lw8x                                         1/1     Running     0          2m14s
+redhat-operators-8xgvw                                            1/1     Running     0          2d15h
+```
+
+
 
 ## Pushing External Images to your Private Image Registry
 
