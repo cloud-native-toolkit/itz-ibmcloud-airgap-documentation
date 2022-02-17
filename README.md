@@ -441,11 +441,11 @@ If you get an error while mirroring similar to
 ```text
 error: unable to push quay.io/opencloudio/icp4data-nginx-repo: failed to upload blob
 sha256:d15edd54cb42b8e220f31259a0e16ab2dc5790543ff58c57c9dd24cf7e597c70: error parsing
- HTTP 400 response body: invalid character '<' looking for beginning of value: 
- "<html>\r\n<head><title>400 Request Header Or Cookie Too Large
- </title></head>\r\n<body>\r\n<center><h1>400 Bad Request</h1></center>\r\n<center>
- Request Header Or Cookie Too Large</center>\r\n<hr><center>nginx</center>\r\n</body>
- \r\n</html>\r\n"
+HTTP 400 response body: invalid character '<' looking for beginning of value: 
+"<html>\r\n<head><title>400 Request Header Or Cookie Too Large
+</title></head>\r\n<body>\r\n<center><h1>400 Bad Request</h1></center>\r\n<center>
+Request Header Or Cookie Too Large</center>\r\n<hr><center>nginx</center>\r\n</body>
+\r\n</html>\r\n"
 ```
 
 rerun the mirror command with `--chunks 50`
