@@ -258,7 +258,7 @@ Once the images are mirrored, follow the [Update imageContentSourcePolicy](#upda
 
 ### 6.1 Sample CloudPak Deployment
 
-#### 6.1.1 save case bundles on Bastion Host
+#### 6.1.1 Save Case Bundles on Bastion Host
 
 ```bash
 ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ export CASE_NAME=ibm-cp-integration
@@ -528,7 +528,7 @@ ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$
 
 If your customer is not running ROKS, then you can run `oc apply -f "/tmp/airgap_image_policy_zJwCrj3GE"`
 
-In ROKS, you need to manually update the nodes.  To do so, for each `-mirror` in the list above, create the following snippet.  
+In ROKS, you need to manually update the nodes.  To do so, for each mirror in `spec.repositoryDigestMirrors` in the list above, create the following snippet.  
 
 ```text
 [[registry]]
