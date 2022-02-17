@@ -20,7 +20,7 @@ A VPN Server is deployed in each od the target regions to provide access to the 
 
 ## Getting an Environment
 
-To create an instance of this AirGapped environment, head to the [Production Deployment Guides Collection](https://techzone.ibm.com/collection/production-deployment-guides) in TechZone, click on the `Try It - Get a GitOps Cluster` tab, and select the `IBM Cloud AirGapped Cluster with GitOps configuration` tile.
+To create an instance of this AirGapped environment, head to the [Production Deployment Guides Collection](https://techzone.ibm.com/collection/production-deployment-guides) in TechZone, click on the `Try It - Get a GitOps Cluster` tab, and select the `IBM Cloud AirGapped Cluster with GitOps configuration` tile. Fill out the reservation form, and a new environment will be ready in around 90 minutes.  You will receive a welcome email with credentials and relevant links once the provisioning is complete.
 
 ## Welcome Email
 
