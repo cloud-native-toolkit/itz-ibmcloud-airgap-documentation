@@ -555,9 +555,11 @@ The following helper script can automate this task.  It leverages a special Daem
 
 ```bash
 $ sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+$ sudo chmod +x /usr/local/bin/yq
 $ export POLICY_FILE=/tmp/airgap_image_policy_zJwCrj3GE
-ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$ for source in $(cat $POLICY_FILE |yq -r '.spec.repositoryDigestMirrors[] .source');do
-    mirror=$(cat $POLICY_FILE |yq -r --arg source "$source" '.spec.repositoryDigestMirrors[] | select(.source == $source )| .mirrors[0]')
+$ yq $POLICY_FILE -o json > /tmp/icsp.json
+$ for source in $(cat /tmp/icsp.json |jq -r '.spec.repositoryDigestMirrors[] .source');do
+    mirror=$(cat /tmp/icsp.json |jq -r --arg source $source '.spec.repositoryDigestMirrors[] | select(.source == $source) | .mirrors[0]')
     echo "$source=$mirror"
 done >> $HOME/manifests-redhat-operator-index/mapping.txt
 $ oc create secret generic -n kube-system registry-mapping --from-file=mapping.txt=$HOME/manifests-redhat-operator-index/mapping.txt --dry-run=client -o yaml|oc apply -f -
