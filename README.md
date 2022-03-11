@@ -532,7 +532,7 @@ OK
 ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$
 ```
 
-If your customer is not running ROKS, then you can run `oc apply -f "/tmp/airgap_image_policy_zJwCrj3GE"`
+If your customer is not running ROKS, then you can run `oc apply -f "/tmp/airgap_image_policy_zJwCrj3GE"`.  The filename will change everytime you run the command above, so take note of the correct filename for the next steps.
 
 In ROKS, you need to manually update the nodes.  To do so, for each mirror in `spec.repositoryDigestMirrors` in the list above, create the following snippet.  
 
@@ -556,7 +556,7 @@ The following helper script can automate this task.  It leverages a special Daem
 ```bash
 $ sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
 $ sudo chmod +x /usr/local/bin/yq
-$ export POLICY_FILE=/tmp/airgap_image_policy_zJwCrj3GE
+$ export POLICY_FILE=/tmp/airgap_image_policy_zJwCrj3GE # replace with the correct filename
 $ yq $POLICY_FILE -o json > /tmp/icsp.json
 $ for source in $(cat /tmp/icsp.json |jq -r '.spec.repositoryDigestMirrors[] .source');do
     mirror=$(cat /tmp/icsp.json |jq -r --arg source $source '.spec.repositoryDigestMirrors[] | select(.source == $source) | .mirrors[0]')
