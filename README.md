@@ -532,7 +532,8 @@ OK
 ubuntu@itzroks-1100007b1r-zjxv3v58-bastion:~$
 ```
 
-If your customer is not running ROKS, then you can run `oc apply -f "/tmp/airgap_image_policy_zJwCrj3GE"`.  The filename will change everytime you run the command above, so take note of the correct filename for the next steps.
+If your customer is not running ROKS, then you can run `oc apply -f "/tmp/airgap_image_policy_zJwCrj3GE"`.  
+**NOTE**: This filename will change everytime you run the command above, so take note of the correct filename for the next steps.
 
 In ROKS, you need to manually update the nodes.  To do so, for each mirror in `spec.repositoryDigestMirrors` in the list above, create the following snippet.  
 
